@@ -1,4 +1,4 @@
-# kuaifan-toutiao-publish-admin
+# seer-toutiao-publish-admin
 
 ## Project setup
 ```
