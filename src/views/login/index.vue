@@ -6,11 +6,12 @@
         <el-input
           v-model="user.mobile"
           placeholder="请输入手机号"
+          prefix-icon="iconfont iconshoujihao"
         ></el-input>
       </el-form-item>
 
       <el-form-item  prop="code">
-        <el-input v-model="user.code" placeholder="请输入验证码"></el-input>
+        <el-input v-model="user.code" placeholder="请输入验证码" prefix-icon="iconfont iconyanzhengma" ></el-input>
       </el-form-item>
 
       <el-form-item prop="agree">
@@ -79,6 +80,7 @@ export default {
           this.isLoading = false
           console.log(data)
           this.$message.success('登录成功!')
+          this.$router.push('/')
         })
         .catch((error) => {
           this.isLoading = false
