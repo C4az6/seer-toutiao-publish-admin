@@ -1,5 +1,7 @@
 <template>
-  <div class="home-container">我是一个Home页面</div>
+  <div class="home-container">
+
+  </div>
 </template>
 
 <script>
@@ -18,4 +20,9 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  .home-container {
+    background: url('//be-toutiao-web.itheima.net/img/welcome.ce901248.jpg') no-repeat 50%;
+    height: 100%;
+  }
+</style>

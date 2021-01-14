@@ -41,7 +41,31 @@
         </el-menu>
       </el-aside>
       <el-container>
-        <el-header class="layout-header">Header</el-header>
+        <el-header class="layout-header">
+          <div class="layout-title">
+            <i class="el-icon-s-operation"></i>
+            <span>先知内容发布后台管理系统</span>
+          </div>
+          <div class="layout-user-info">
+            <el-dropdown>
+              <span class="el-dropdown-link">
+                <img class="user-avatar" src="//toutiao-img.itheima.net/Fhb9-H_TZGu94b1CAEKn9fFQIsXl" alt="">
+                Alexander
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                  <i class="el-icon-setting"></i>
+                  个人设置
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <i class="el-icon-unlock"></i>
+                  退出登录
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+        </el-header>
         <el-main class="layout-main"><router-view></router-view></el-main>
       </el-container>
     </el-container>
@@ -87,7 +111,32 @@ export default {
 }
 
 .layout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid #dddddd;
+  .layout-title {
+    font-size: 24px;
+    i {
+      color: #002033;
+      margin-right: 20px;
+    }
+  }
+
+  .layout-user-info {
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .el-dropdown-link {
+      display: flex;
+      // justify-content: center;
+      align-items: center;
+    }
+  }
 }
 
 .aside-logo {
