@@ -21,7 +21,7 @@
             <i class="el-icon-setting"></i>
             个人设置
           </el-dropdown-item>
-          <el-dropdown-item>
+          <el-dropdown-item @click.native="handleLogout">
             <i class="el-icon-unlock"></i>
             退出登录
           </el-dropdown-item>
@@ -47,10 +47,22 @@ export default {
   mounted () {
   },
   methods: {
+    // 展开或折叠左侧菜单栏
     showCollapse () {
       this.isCollapse = !this.isCollapse
       // 利用事件总线实现兄弟组件传参
       this.$bus.$emit('handleChangeCollapse', this.isCollapse)
+    },
+
+    // 退出登录
+    handleLogout () {
+      /*
+        注意：这个点击事件是在el-dropdown-item组件上绑定的，该组件默认不支持click，我们需要通过@click.native修饰符来解决
+        1. 清除localStorage中的user_token数据
+        2. 重定向到登录页面
+      */
+      window.localStorage.removeItem('user_token')
+      this.$router.push('/login')
     }
   }
 }

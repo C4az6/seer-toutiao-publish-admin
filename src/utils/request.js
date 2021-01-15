@@ -6,17 +6,6 @@ const request = axios.create({
   baseURL: 'http://api-toutiao-web.itheima.net'
 })
 
-// 配置axios请求拦截器
-/* request.interceptors.request.use(function (config) {
-  return config
-}, function (error) {
-  return Promise.reject(error)
-}) */
-
-/* request.interceptors.request.use(config => {
-  console.log(config)
-}, error => Promise.reject(error)) */
-
 // 请求拦截器
 request.interceptors.request.use(
   // 任何所有请求会经过这里

@@ -32,10 +32,9 @@ router.beforeEach((to, from, next) => {
   // 在路由拦截器中判断是否有token，如果有token就next放行，否则next重定向到登录页面
   const userToken = window.localStorage.getItem('user_token')
   if (!userToken && to.path !== '/login') {
-    next('/login')
-  } else {
-    next()
+    return next('/login')
   }
+  next()
 })
 
 export default router
