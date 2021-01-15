@@ -1,7 +1,7 @@
 <template>
   <div class="layout-container">
     <el-container class="layout-wrap">
-      <el-aside class="layout-aside" width="200px">
+      <el-aside class="layout-aside" width="auto">
         <app-aside />
       </el-aside>
       <el-container>
@@ -41,6 +41,7 @@ export default {
   left: 0;
   bottom: 0;
   .layout-wrap {
+    width: 100%;
     height: 100%;
   }
 }

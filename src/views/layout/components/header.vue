@@ -1,7 +1,7 @@
 <template>
   <div class="header-container">
     <div class="layout-title">
-      <i class="el-icon-s-operation"></i>
+      <i class="el-icon-s-operation" @click="showCollapse"></i>
       <span>先知内容发布后台管理系统</span>
     </div>
     <div class="layout-user-info">
@@ -37,13 +37,21 @@ export default {
   components: {},
   props: {},
   data () {
-    return {}
+    return {
+      isCollapse: false // aside是否折叠，true：折叠，false：展开
+    }
   },
   computed: {},
   watch: {},
   created () {},
   mounted () {},
-  methods: {}
+  methods: {
+    showCollapse () {
+      this.isCollapse = !this.isCollapse
+      // 利用事件总线实现兄弟组件传参
+      this.$bus.$emit('handleChangeCollapse', this.isCollapse)
+    }
+  }
 }
 </script>
 
@@ -74,6 +82,9 @@ export default {
       // justify-content: center;
       align-items: center;
     }
+  }
+  .el-icon-s-operation:hover {
+    cursor: pointer;
   }
 }
 </style>
