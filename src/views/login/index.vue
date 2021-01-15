@@ -76,10 +76,11 @@ export default {
       // 开启等待状态
       this.isLoading = true
       userLogin(this.user)
-        .then(({ data }) => {
+        .then(({ data: res }) => {
           this.isLoading = false
-          console.log(data)
           this.$message.success('登录成功!')
+          // 将token存入localStorage
+          window.localStorage.setItem('user_token', JSON.stringify(res.data))
           this.$router.push('/')
         })
         .catch((error) => {

@@ -9,11 +9,11 @@
         <span class="el-dropdown-link">
           <img
             class="user-avatar"
-            src="//toutiao-img.itheima.net/Fhb9-H_TZGu94b1CAEKn9fFQIsXl"
+            :src="userInfo.photo"
             onerror="this.src='https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F13%2F20190113010747_cvejy.thumb.700_0.jpg&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1613235977&t=4a45438d6134fad3e95c07bc35f287b5'"
             alt="user avatar"
           />
-          Alexander
+          {{userInfo.name}}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -35,7 +35,7 @@
 export default {
   name: 'AppHeader',
   components: {},
-  props: {},
+  props: ['userInfo'],
   data () {
     return {
       isCollapse: false // aside是否折叠，true：折叠，false：展开
@@ -44,7 +44,8 @@ export default {
   computed: {},
   watch: {},
   created () {},
-  mounted () {},
+  mounted () {
+  },
   methods: {
     showCollapse () {
       this.isCollapse = !this.isCollapse
@@ -75,6 +76,11 @@ export default {
       height: 40px;
       border-radius: 50%;
       margin-right: 10px;
+      transition: all 1s;
+      &:hover {
+        // 头像360翻转
+        transform: rotate(360deg);
+      }
     }
 
     .el-dropdown-link {

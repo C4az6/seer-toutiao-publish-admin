@@ -10,3 +10,9 @@ export const userLogin = data => {
 }
 
 // 获取用户数据
+export const userInfo = data => {
+  return request({
+    method: 'GET',
+    url: '/mp/v1_0/user/profile'
+  })
+}

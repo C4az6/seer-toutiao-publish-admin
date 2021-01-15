@@ -6,7 +6,7 @@
       </el-aside>
       <el-container>
         <el-header class="layout-header">
-          <AppHeader />
+          <AppHeader :userInfo="userInfo" />
         </el-header>
         <el-main class="layout-main"><router-view></router-view></el-main>
       </el-container>
@@ -17,18 +17,35 @@
 <script>
 import AppHeader from './components/header'
 import AppAside from './components/aside'
+import { userInfo } from '@/api/user'
 export default {
   name: 'LayoutIndex',
   components: { AppAside, AppHeader },
   props: {},
   data () {
-    return {}
+    return {
+      userInfo: {}
+    }
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    this.getUserInfo()
+  },
   mounted () {},
-  methods: {}
+  methods: {
+    getUserInfo () {
+      userInfo().then(({ data: res }) => {
+        this.userInfo = res.data
+      }).catch(error => {
+        console.log(error)
+        this.$message.error('您还没有登录!')
+        setTimeout(_ => {
+          this.$router.push('/login')
+        }, 2000)
+      })
+    }
+  }
 }
 </script>
 
