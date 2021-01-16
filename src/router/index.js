@@ -3,25 +3,29 @@ import VueRouter from 'vue-router'
 import Login from '@/views/login'
 import Layout from '@/views/layout'
 import Home from '@/views/home'
+import Article from '@/views/article'
 Vue.use(VueRouter)
 
-const routes = [
-  {
-    path: '/login',
-    name: 'login',
-    component: Login
+const routes = [{
+  path: '/login',
+  name: 'login',
+  component: Login
+},
+{
+  path: '/',
+  component: Layout,
+  children: [{
+    path: '', // path 为空作为默认子路由渲染
+    name: 'home',
+    component: Home
   },
   {
-    path: '/',
-    component: Layout,
-    children: [
-      {
-        path: '', // path 为空作为默认子路由渲染
-        name: 'home',
-        component: Home
-      }
-    ]
+    path: '/article',
+    name: 'Article',
+    component: Article
   }
+  ]
+}
 ]
 
 const router = new VueRouter({
