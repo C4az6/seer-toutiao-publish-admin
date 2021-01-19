@@ -212,12 +212,12 @@ export default {
 </script>
 
 <style scoped lang="less">
-/*   .article-container .box-card:nth-child(1) {
+  .article-container .box-card:nth-child(1) {
     margin-bottom: 20px;
   }
 
   .article-pagination {
     margin-top: 20px;
     text-align: right;
-  } */
+  }
 </style>
