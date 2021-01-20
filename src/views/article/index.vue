@@ -83,7 +83,7 @@
           width="120px"
           label="状态">
           <template slot-scope="scope">
-            <el-tag type="success">{{ scope.row.status | auditStatus}}</el-tag>
+            <el-tag :type="articleStatusList[scope.row.status].type">{{ articleStatusList[scope.row.status].name }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -131,7 +131,7 @@
 <script>
 import { articleList } from '@/api/article'
 export default {
-  name: 'Artcle',
+  name: 'ArticleIndex',
   components: {},
   props: {},
   data () {
@@ -149,12 +149,19 @@ export default {
       value1: '',
       articleList: [], // article dataset
       articleTotal: 0, // article dataset total count
-      currentPage4: 4
+      currentPage4: 4,
+      articleStatusList: [ // 文章状态列表
+        { status: 0, name: '草稿', type: 'info' },
+        { status: 1, name: '待审核', type: 'primary' },
+        { status: 2, name: '审核通过', type: 'success' },
+        { status: 3, name: '审核失败', type: 'warning' },
+        { status: 4, name: '已删除', type: 'danger' }
+      ]
     }
   },
   filters: {
     // 文章审核状态过滤器
-    auditStatus: value => {
+    /*     auditStatus: value => {
       switch (value) {
         case 0:
           return '草稿'
@@ -169,7 +176,7 @@ export default {
         default:
           return '未知'
       }
-    }
+    } */
   },
   computed: {},
   watch: {},
