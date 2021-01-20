@@ -69,9 +69,25 @@
       </el-table-column>
         <el-table-column
         align="center"
-          prop="date"
           label="封面"
           width="180">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 150px; height: 100px"
+              :src="scope.row.cover.images[0]"
+              lazy
+              :preview-src-list="scope.row.cover.images"
+              fit="cover">
+              <!-- 占位内容 -->
+              <div slot="placeholder" class="image-slot">
+                加载中<span class="dot">...</span>
+              </div>
+              <!-- 加载失败内容 -->
+              <div slot="error" class="image-slot">
+                <img class="article-error-cover" src="./error.3f7b1f94.gif" alt="error">
+              </div>
+              </el-image>
+          </template>
         </el-table-column>
         <el-table-column
         align="center"
@@ -159,9 +175,9 @@ export default {
       ]
     }
   },
-  filters: {
+  /*   filters: {
     // 文章审核状态过滤器
-    /*     auditStatus: value => {
+    auditStatus: value => {
       switch (value) {
         case 0:
           return '草稿'
@@ -176,8 +192,8 @@ export default {
         default:
           return '未知'
       }
-    } */
-  },
+    }
+  }, */
   computed: {},
   watch: {},
   created () {
@@ -202,7 +218,7 @@ export default {
     },
     // 获取文章列表数据
     getArticleList () {
-      articleList().then(({ data: res }) => {
+      articleList({ per_page: 20 }).then(({ data: res }) => {
         this.articleList = res.data.results
         this.articleTotal = res.data.total_count
       }).catch(error => {
@@ -225,6 +241,13 @@ export default {
 
   .article-pagination {
     margin-top: 20px;
-    text-align: right;
+  }
+
+  .article-error-cover {
+    width: 100%;
+  }
+  /* deep 穿透修改element-ui的组件样式 */
+  /deep/ .el-icon-circle-close {
+    color: lightblue ;
   }
 </style>
