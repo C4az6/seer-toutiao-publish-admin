@@ -43,7 +43,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">筛选</el-button>
+          <el-button type="primary" @click="onSubmit" :loading="isLoading">筛选</el-button>
         </el-form-item>
       </el-form>
       <!-- form表单部分 end -->
@@ -61,6 +61,7 @@
         border
         size="medium"
         type="index"
+        v-loading="isLoading"
       >
         <el-table-column align="center" label="#" type="index">
         </el-table-column>
@@ -133,6 +134,7 @@
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
         :total="articleTotal"
+        :disabled="isLoading"
       >
       </el-pagination>
     </el-card>
@@ -163,6 +165,7 @@ export default {
         { status: 3, name: '审核失败', type: 'warning' },
         { status: 4, name: '已删除', type: 'danger' }
       ],
+      isLoading: false,
       pages: { // 分页参数对象
         page: 1, // 页码，默认值1
         per_page: 10 // 默认每页显示的纪录数
@@ -205,12 +208,15 @@ export default {
     },
     // 获取文章列表数据函数
     getArticleList () {
+      this.isLoading = true
       articleList(this.pages)
         .then(({ data: res }) => {
+          this.isLoading = false
           this.articleList = res.data.results
           this.articleTotal = res.data.total_count
         })
         .catch((error) => {
+          this.isLoading = false
           console.log(error)
         })
     },
@@ -219,8 +225,8 @@ export default {
     onSubmit () {
       this.pages.status = this.form.status
       this.pages.channel_id = this.form.channelId
-      this.pages.begin_pubdate = this.form.dateList[0]
-      this.pages.end_pubdate = this.form.dateList[1]
+      this.pages.begin_pubdate = this.form.dateList ? this.form.dateList[0] : null
+      this.pages.end_pubdate = this.form.dateList ? this.form.dateList[1] : null
       this.getArticleList()
     }
   }
