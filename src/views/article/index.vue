@@ -106,7 +106,7 @@
         >
         </el-table-column>
         <el-table-column align="center" width="300px" label="操作">
-          <template>
+          <template slot-scope="scope">
             <el-button
               type="primary"
               plain
@@ -119,7 +119,7 @@
               plain
               circle
               icon="el-icon-delete"
-              @click="handleDelete"
+              @click="handleDelete(scope.row.id)"
             ></el-button>
           </template>
         </el-table-column>
@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { articleList, articleChannel } from '@/api/article'
+import { articleList, articleChannel, deleteArticle } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   components: {},
@@ -184,7 +184,6 @@ export default {
     // 获取文章频道数据函数
     getArticleChannel () {
       articleChannel().then(({ data: res }) => {
-        console.log(res)
         this.channelList = res.data.channels
       }).catch(error => { console.log(error) })
     },
@@ -193,8 +192,33 @@ export default {
       console.log('edit button click...')
     },
     // 删除文章事件函数
-    handleDelete () {
-      console.log('delete button click...')
+    handleDelete (id) {
+      console.log(`删除的文章ID: ${id}`)
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteArticle(id).then(({ data: res }) => {
+          console.log(res)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getArticleList()
+        }).catch(error => {
+          console.log(error)
+          this.$message({
+            type: 'error',
+            message: '删除失败,服务器异常!'
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     // 每页显示记录数变化的事件函数
     handleSizeChange (val) {
@@ -211,6 +235,7 @@ export default {
       this.isLoading = true
       articleList(this.pages)
         .then(({ data: res }) => {
+          console.log(res)
           this.isLoading = false
           this.articleList = res.data.results
           this.articleTotal = res.data.total_count
