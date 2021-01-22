@@ -39,7 +39,8 @@
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
-            end-placeholder="结束日期">
+            end-placeholder="结束日期"
+          >
           </el-date-picker>
         </el-form-item>
         <el-form-item>
@@ -52,7 +53,7 @@
     <!-- 数据列表部分 start -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>根据筛选条件共查询到 {{articleTotal}} 条结果：</span>
+        <span>根据筛选条件共查询到 {{ articleTotal }} 条结果：</span>
       </div>
       <el-table
         :data="articleList"
@@ -60,71 +61,66 @@
         stripe
         border
         size="medium"
-        type=index
-        >
-      <el-table-column
-        align="center"
-        label="#"
-        type="index">
-      </el-table-column>
-        <el-table-column
-        align="center"
-          label="封面"
-          width="180">
+        type="index"
+      >
+        <el-table-column align="center" label="#" type="index">
+        </el-table-column>
+        <el-table-column align="center" label="封面" width="180">
           <template slot-scope="scope">
             <el-image
               style="width: 150px; height: 100px"
               :src="scope.row.cover.images[0]"
               lazy
               :preview-src-list="scope.row.cover.images"
-              fit="cover">
+              fit="cover"
+            >
               <!-- 占位内容 -->
               <div slot="placeholder" class="image-slot">
                 加载中<span class="dot">...</span>
               </div>
               <!-- 加载失败内容 -->
               <div slot="error" class="image-slot">
-                <img class="article-error-cover" src="./error.3f7b1f94.gif" alt="error">
+                <img
+                  class="article-error-cover"
+                  src="./error.3f7b1f94.gif"
+                  alt="error"
+                />
               </div>
-              </el-image>
+            </el-image>
           </template>
         </el-table-column>
-        <el-table-column
-        align="center"
-          prop="title"
-          label="标题">
+        <el-table-column align="center" prop="title" label="标题">
         </el-table-column>
-        <el-table-column
-          align="center"
-          width="120px"
-          label="状态">
+        <el-table-column align="center" width="120px" label="状态">
           <template slot-scope="scope">
-            <el-tag :type="articleStatusList[scope.row.status].type">{{ articleStatusList[scope.row.status].name }}</el-tag>
+            <el-tag :type="articleStatusList[scope.row.status].type">{{
+              articleStatusList[scope.row.status].name
+            }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
           align="center"
           prop="pubdate"
           width="300px"
-          label="发布时间">
+          label="发布时间"
+        >
         </el-table-column>
-        <el-table-column
-          align="center"
-          width="300px"
-          label="操作">
-           <template>
+        <el-table-column align="center" width="300px" label="操作">
+          <template>
             <el-button
               type="primary"
               plain
               circle
               icon="el-icon-edit"
-              @click="handleEdit"></el-button>
+              @click="handleEdit"
+            ></el-button>
             <el-button
               type="danger"
               plain
               circle
               icon="el-icon-delete"
-              @click="handleDelete"></el-button>
+              @click="handleDelete"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -133,11 +129,12 @@
         background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="articleTotal"
+      >
       </el-pagination>
     </el-card>
     <!-- 数据列表部分 end -->
@@ -165,35 +162,20 @@ export default {
       value1: '',
       articleList: [], // article dataset
       articleTotal: 0, // article dataset total count
-      currentPage4: 4,
+      currentPage: 1,
       articleStatusList: [ // 文章状态列表
         { status: 0, name: '草稿', type: 'info' },
         { status: 1, name: '待审核', type: 'primary' },
         { status: 2, name: '审核通过', type: 'success' },
         { status: 3, name: '审核失败', type: 'warning' },
         { status: 4, name: '已删除', type: 'danger' }
-      ]
-    }
-  },
-  /*   filters: {
-    // 文章审核状态过滤器
-    auditStatus: value => {
-      switch (value) {
-        case 0:
-          return '草稿'
-        case 1:
-          return '待审核'
-        case 2:
-          return '审核通过'
-        case 3:
-          return '审核失败'
-        case 4:
-          return '已删除'
-        default:
-          return '未知'
+      ],
+      pages: { // 分页参数对象
+        page: 1, // 页码，默认值1
+        per_page: 10 // 默认每页显示的纪录数
       }
     }
-  }, */
+  },
   computed: {},
   watch: {},
   created () {
@@ -201,32 +183,38 @@ export default {
   },
   mounted () {},
   methods: {
-    // 编辑文章
+    // 编辑文章事件函数
     handleEdit () {
       console.log('edit button click...')
     },
-
+    // 删除文章事件函数
     handleDelete () {
       console.log('delete button click...')
     },
-
+    // 每页显示记录数变化的事件函数
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
+      this.pages.per_page = val
+      this.getArticleList()
     },
+    // 页码变化的事件函数
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.pages.page = val
+      this.getArticleList()
     },
-    // 获取文章列表数据
+    // 获取文章列表数据函数
     getArticleList () {
-      articleList({ per_page: 20 }).then(({ data: res }) => {
-        this.articleList = res.data.results
-        this.articleTotal = res.data.total_count
-      }).catch(error => {
-        console.log(error)
-      })
+      articleList(this.pages)
+        .then(({ data: res }) => {
+          this.articleList = res.data.results
+          this.articleTotal = res.data.total_count
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
 
-    // 筛选按钮事件处理函数
+    // 筛选按钮事件函数
     onSubmit () {
       console.log('submit')
     }
@@ -235,19 +223,19 @@ export default {
 </script>
 
 <style scoped lang="less">
-  .article-container .box-card:nth-child(1) {
-    margin-bottom: 20px;
-  }
+.article-container .box-card:nth-child(1) {
+  margin-bottom: 20px;
+}
 
-  .article-pagination {
-    margin-top: 20px;
-  }
+.article-pagination {
+  margin-top: 20px;
+}
 
-  .article-error-cover {
-    width: 100%;
-  }
-  /* deep 穿透修改element-ui的组件样式 */
-  /deep/ .el-icon-circle-close {
-    color: lightblue ;
-  }
+.article-error-cover {
+  width: 100%;
+}
+/* deep 穿透修改element-ui的组件样式 */
+/deep/ .el-icon-circle-close {
+  color: lightblue;
+}
 </style>

@@ -10,7 +10,7 @@
           <img
             class="user-avatar"
             :src="userInfo.photo"
-            onerror="this.src='https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201901%2F13%2F20190113010747_cvejy.thumb.700_0.jpg&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1613235977&t=4a45438d6134fad3e95c07bc35f287b5'"
+            onerror="this.src='https://avatars2.githubusercontent.com/u/54710109?s=460&u=bd598d72ed9b95c170620e9ecd668c709b5f8c59&v=4'"
             alt="user avatar"
           />
           {{userInfo.name}}
