@@ -13,33 +13,32 @@
       <!-- form表单部分 stat -->
       <el-form ref="form" :model="form" label-width="40px" size="small">
         <el-form-item label="状态">
-          <el-radio-group v-model="form.resource">
-            <el-radio label="全部"></el-radio>
-            <el-radio label="草稿"></el-radio>
-            <el-radio label="待审核"></el-radio>
-            <el-radio label="审核通过"></el-radio>
-            <el-radio label="审核失败"></el-radio>
-            <el-radio label="已删除"></el-radio>
+          <el-radio-group v-model="form.status">
+            <el-radio :label="null">全部</el-radio>
+            <el-radio :label="0">草稿</el-radio>
+            <el-radio :label="1">待审核</el-radio>
+            <el-radio :label="2">审核通过</el-radio>
+            <el-radio :label="3">审核失败</el-radio>
+            <el-radio :label="4">已删除</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
-          <el-select v-model="form.region" placeholder="请选择">
-            <el-option label="开发者资讯" value="shanghai"></el-option>
-            <el-option label="ios" value="beijing"></el-option>
-            <el-option label="c++" value="beijing"></el-option>
-            <el-option label="android" value="beijing"></el-option>
-            <el-option label="css" value="beijing"></el-option>
-            <el-option label="数据库" value="beijing"></el-option>
-            <el-option label="区块链" value="beijing"></el-option>
+          <el-select v-model="form.channelId" placeholder="请选择">
+            <el-option label="全部" :value="null"
+            ></el-option>
+            <el-option :label="item.name" :value="item.id" v-for="(item, index) in channelList"
+            :key="index"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="日期">
           <el-date-picker
-            v-model="value1"
+            v-model="form.dateList"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
           >
           </el-date-picker>
         </el-form-item>
@@ -142,7 +141,7 @@
 </template>
 
 <script>
-import { articleList } from '@/api/article'
+import { articleList, articleChannel } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   components: {},
@@ -150,16 +149,10 @@ export default {
   data () {
     return {
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '全部',
-        desc: ''
+        dateList: null, // 日期
+        status: null, // 文章状态
+        channelId: null // 文章频道ID
       },
-      value1: '',
       articleList: [], // article dataset
       articleTotal: 0, // article dataset total count
       currentPage: 1,
@@ -173,16 +166,25 @@ export default {
       pages: { // 分页参数对象
         page: 1, // 页码，默认值1
         per_page: 10 // 默认每页显示的纪录数
-      }
+      },
+      channelList: [] // 文章频道列表数据
     }
   },
   computed: {},
   watch: {},
   created () {
     this.getArticleList()
+    this.getArticleChannel()
   },
   mounted () {},
   methods: {
+    // 获取文章频道数据函数
+    getArticleChannel () {
+      articleChannel().then(({ data: res }) => {
+        console.log(res)
+        this.channelList = res.data.channels
+      }).catch(error => { console.log(error) })
+    },
     // 编辑文章事件函数
     handleEdit () {
       console.log('edit button click...')
@@ -193,7 +195,6 @@ export default {
     },
     // 每页显示记录数变化的事件函数
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
       this.pages.per_page = val
       this.getArticleList()
     },
@@ -216,7 +217,11 @@ export default {
 
     // 筛选按钮事件函数
     onSubmit () {
-      console.log('submit')
+      this.pages.status = this.form.status
+      this.pages.channel_id = this.form.channelId
+      this.pages.begin_pubdate = this.form.dateList[0]
+      this.pages.end_pubdate = this.form.dateList[1]
+      this.getArticleList()
     }
   }
 }

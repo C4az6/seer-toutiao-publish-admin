@@ -9,3 +9,11 @@ export const articleList = data => {
     params: data
   })
 }
+
+// 获取频道数据
+export const articleChannel = data => {
+  return request({
+    method: 'GET',
+    url: '/mp/v1_0/channels'
+  })
+}
