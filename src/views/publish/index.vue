@@ -8,7 +8,9 @@ export default {
   components: {},
   props: {},
   data () {
-    return {}
+    return {
+      artileParams: {} // 文章参数
+    }
   },
   computed: {},
   watch: {},
