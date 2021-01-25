@@ -1,5 +1,5 @@
 <template>
-  <div class="publish-container">文章发布模块</div>
+  <div class="publish-container">文章发布组件</div>
 </template>
 
 <script>
