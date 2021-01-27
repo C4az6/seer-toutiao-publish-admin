@@ -25,3 +25,23 @@ export const deleteArticle = id => {
     url: `/mp/v1_0/articles/${id}`
   })
 }
+
+// 发布文章
+export const publishArticle = (data, draft = false) => {
+  return request({
+    method: 'POST',
+    url: '/mp/v1_0/articles',
+    params: { draft },
+    data
+  })
+}
+
+// 编辑文章
+export const editArticle = (data, artileId, draft) => {
+  return request({
+    method: 'PUI',
+    url: `/mp/v1_0/articles/${artileId}`,
+    params: { draft },
+    data
+  })
+}
