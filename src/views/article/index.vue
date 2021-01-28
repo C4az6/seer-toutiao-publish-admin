@@ -112,7 +112,7 @@
               plain
               circle
               icon="el-icon-edit"
-              @click="handleEdit"
+              @click="$router.push(`/publish?id=${scope.row.id}`)"
             ></el-button>
             <el-button
               type="danger"
@@ -186,10 +186,6 @@ export default {
       articleChannel().then(({ data: res }) => {
         this.channelList = res.data.channels
       }).catch(error => { console.log(error) })
-    },
-    // 编辑文章事件函数
-    handleEdit () {
-      console.log('edit button click...')
     },
     // 删除文章事件函数
     handleDelete (id) {

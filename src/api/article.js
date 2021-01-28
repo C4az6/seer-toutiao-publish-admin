@@ -45,3 +45,11 @@ export const editArticle = (data, artileId, draft) => {
     data
   })
 }
+
+// 根据文章id查询文章信息
+export const getArticleInfo = id => {
+  return request({
+    method: 'GET',
+    url: '/mp/v1_0/articles/' + id
+  })
+}

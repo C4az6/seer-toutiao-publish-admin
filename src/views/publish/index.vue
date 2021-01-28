@@ -4,7 +4,7 @@
       <div slot="header" class="clearfix">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>发布文章</el-breadcrumb-item>
+          <el-breadcrumb-item>{{$route.query.id?'编辑文章':'发布文章'}}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
 
@@ -34,7 +34,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="publishArticleRequest()">发布文章</el-button>
+          <el-button type="primary" @click="publishArticleRequest()">{{$route.query.id?'编辑文章':'发布文章'}}</el-button>
           <el-button @click="publishArticleRequest(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { articleChannel, publishArticle } from '@/api/article'
+import { articleChannel, publishArticle, getArticleInfo, editArticle } from '@/api/article'
 export default {
   name: 'PublishIndex',
   components: {},
@@ -66,6 +66,17 @@ export default {
   watch: {},
   created () {
     this.loadArticleChannel()
+    console.log('article id: ', this.$route.query.id)
+    const { query: { id } } = this.$route
+    if (id) {
+      console.log('编辑文章')
+      getArticleInfo(id).then(({ data: res }) => {
+        console.log(res)
+        this.form = res.data
+      }).catch(error => {
+        console.log(error)
+      })
+    }
   },
   mounted () {},
   methods: {
@@ -80,6 +91,20 @@ export default {
     },
     // 发布文章函数
     publishArticleRequest (draft = false) {
+      if (this.$route.query.id) {
+        // 编辑文章
+        editArticle(this.form, this.$route.query.id, draft).then(({ data: res }) => {
+          this.$message({
+            type: 'success',
+            message: draft ? '存入草稿成功' : '编辑文章成功'
+          })
+          this.$router.push({ name: 'article' })
+        }).catch(error => {
+          console.log(error)
+          this.$message.error('服务器异常,请重试')
+        })
+        return
+      }
       publishArticle(this.form, draft).then(({ data: res }) => {
         this.$message({
           type: 'success',
