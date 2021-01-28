@@ -10,23 +10,29 @@
         </el-breadcrumb>
       </div>
 
-      <el-form label-width="80px">
-        <el-form-item label="标题">
-          <el-input v-model="form.title"></el-input>
+      <el-form label-width="80px" :model="article" ref="articleForm" :rules="articleRules">
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="article.title"></el-input>
         </el-form-item>
-        <el-form-item label="内容">
-          <el-tiptap v-model="form.content" lang="zh" :extensions="extensions"></el-tiptap>
+        <el-form-item label="内容" prop="content">
+          <el-tiptap
+           v-model="article.content"
+           lang="zh"
+           :extensions="extensions"
+           height="500px"
+           placeholder='写点什么...'
+           ></el-tiptap>
         </el-form-item>
         <el-form-item label="封面">
-          <el-radio-group v-model="form.cover.type">
+          <el-radio-group v-model="article.cover.type">
             <el-radio :label="1">单图</el-radio>
             <el-radio :label="3">三图</el-radio>
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="频道">
-          <el-select v-model="form.channel_id" placeholder="请选择频道">
+        <el-form-item label="频道" prop="channel_id">
+          <el-select v-model="article.channel_id" placeholder="请选择频道">
             <el-option
               :label="item.name"
               :value="item.id"
@@ -58,6 +64,7 @@ import {
   getArticleInfo,
   editArticle
 } from '@/api/article'
+import { uploadImage } from '@/api/material'
 import {
   ElementTiptap,
   Doc,
@@ -94,8 +101,19 @@ export default {
         new Text(),
         new Paragraph(),
         new Heading({ level: 3 }),
-        new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
-        new Image(),
+        new Bold({ bubble: false }), // 在气泡菜单中渲染菜单按钮
+        new Image({
+          // 自定义图片上传函数 返回Promise
+          uploadRequest (file) {
+            const fd = new FormData()
+            fd.append('image', file)
+            // 这里 return 是返回 Promise 对象
+            return uploadImage(fd).then(({ data: res }) => {
+              // 这个 return 是返回最后的结果
+              return res.data.url
+            })
+          }
+        }),
         new Underline(), // 下划线
         new Italic(), // 斜体
         new Strike(), // 删除线
@@ -109,7 +127,7 @@ export default {
         new Preview(),
         new CodeBlock()
       ],
-      form: {
+      article: {
         title: '',
         content: '',
         cover: {
@@ -118,7 +136,30 @@ export default {
         },
         channel_id: null
       },
-      channels: [] // 频道列表
+      channels: [], // 频道列表
+      articleRules: { // 表单校验规则
+        title: [
+          { required: true, message: '标题必填', trigger: 'blur' },
+          { min: 5, max: 30, message: '长度在 5 到 30 个字符', trigger: 'change' }
+        ],
+        content: [
+          {
+            validator (rule, value, callback) {
+              if (value === '<p></p>') {
+                // 验证失败
+                callback(new Error('请输入文章内容'))
+              } else {
+                // 验证通过
+                callback()
+              }
+            }
+          },
+          { required: true, message: '请输入文章内容', trigger: 'blur' }
+        ],
+        channel_id: [
+          { required: true, message: '请选择文章频道', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {},
@@ -134,7 +175,7 @@ export default {
       getArticleInfo(id)
         .then(({ data: res }) => {
           console.log(res)
-          this.form = res.data
+          this.article = res.data
         })
         .catch((error) => {
           console.log(error)
@@ -152,7 +193,6 @@ export default {
               data: { channels: res }
             }
           }) => {
-            console.log('频道数据', res)
             this.channels = res
           }
         )
@@ -162,13 +202,32 @@ export default {
     },
     // 发布文章函数
     publishArticleRequest (draft = false) {
-      if (this.$route.query.id) {
+      // 表单验证
+      this.$refs.articleForm.validate(callback => {
+        if (!callback) {
+          return false
+        }
+        if (this.$route.query.id) {
         // 编辑文章
-        editArticle(this.form, this.$route.query.id, draft)
+          editArticle(this.article, this.$route.query.id, draft)
+            .then(({ data: res }) => {
+              this.$message({
+                type: 'success',
+                message: draft ? '存入草稿成功' : '编辑文章成功'
+              })
+              this.$router.push({ name: 'article' })
+            })
+            .catch((error) => {
+              console.log(error)
+              this.$message.error('服务器异常,请重试')
+            })
+          return
+        }
+        publishArticle(this.article, draft)
           .then(({ data: res }) => {
             this.$message({
               type: 'success',
-              message: draft ? '存入草稿成功' : '编辑文章成功'
+              message: draft ? '存入草稿成功' : '发布文章成功'
             })
             this.$router.push({ name: 'article' })
           })
@@ -176,20 +235,7 @@ export default {
             console.log(error)
             this.$message.error('服务器异常,请重试')
           })
-        return
-      }
-      publishArticle(this.form, draft)
-        .then(({ data: res }) => {
-          this.$message({
-            type: 'success',
-            message: draft ? '存入草稿成功' : '发布文章成功'
-          })
-          this.$router.push({ name: 'article' })
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$message.error('服务器异常,请重试')
-        })
+      })
     }
   }
 }
