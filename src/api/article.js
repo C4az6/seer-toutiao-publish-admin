@@ -39,7 +39,7 @@ export const publishArticle = (data, draft = false) => {
 // 编辑文章
 export const editArticle = (data, artileId, draft) => {
   return request({
-    method: 'PUI',
+    method: 'PUT',
     url: `/mp/v1_0/articles/${artileId}`,
     params: { draft },
     data

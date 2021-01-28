@@ -5,6 +5,7 @@ import Layout from '@/views/layout'
 import Home from '@/views/home'
 import Article from '@/views/article'
 import Publish from '@/views/publish'
+import Material from '@/views/material'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -28,6 +29,10 @@ const routes = [{
     path: '/publish',
     name: 'publish',
     component: Publish
+  }, {
+    path: '/material',
+    name: 'material',
+    component: Material
   }
   ]
 }
