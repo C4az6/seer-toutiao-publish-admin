@@ -2,7 +2,7 @@
   <div class="aside-container">
     <div :class="isCollapse?'aside-logo aside-mini-logo': 'aside-logo'"></div>
     <el-menu
-      default-active="/"
+      :default-active="defaultSelectPath"
       class="el-menu-vertical-demo"
       background-color="#002033"
       text-color="#fff"
@@ -50,18 +50,34 @@ export default {
   props: {},
   data () {
     return {
-      isCollapse: false
+      isCollapse: false,
+      defaultSelectPath: '/'
     }
   },
   computed: {},
-  watch: {},
-  created () {},
+  watch: {
+    $route (to, from) {
+      if (to.path !== '/') {
+        this.defaultSelectPath = this.$route.path.substring(1)
+      } else {
+        this.defaultSelectPath = this.$route.path
+      }
+    }
+  },
+  created () {
+  },
   mounted () {
     this.$bus.$on('handleChangeCollapse', data => {
       this.isCollapse = data
     })
+    if (this.$route.path !== '/') {
+      this.defaultSelectPath = this.$route.path.substring(1)
+    } else {
+      this.defaultSelectPath = this.$route.path
+    }
   },
-  methods: {}
+  methods: {
+  }
 }
 </script>
 
