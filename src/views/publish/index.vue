@@ -166,7 +166,6 @@ export default {
   watch: {},
   created () {
     this.loadArticleChannel()
-    console.log('article id: ', this.$route.query.id)
     const {
       query: { id }
     } = this.$route
