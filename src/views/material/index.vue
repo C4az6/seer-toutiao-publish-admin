@@ -12,12 +12,32 @@
 
       <!-- 图片筛选按钮、添加素材部分 start -->
       <div class="filter-wrap">
-        <el-radio-group v-model="imagesParams.collect" size="small">
+        <el-radio-group v-model="imagesParams.collect" size="small" @change="handleRadioChange">
           <el-radio-button :label="false">全部</el-radio-button>
           <el-radio-button :label="true">收藏</el-radio-button>
         </el-radio-group>
-        <el-button type="success" size="small">添加素材</el-button>
+        <el-button type="success" size="small" @click="uploadDialogVisible = true">添加素材</el-button>
       </div>
+
+      <el-dialog
+        title="上传素材"
+        :visible.sync="uploadDialogVisible"
+        :modal-append-to-body="false"
+        width="30%"
+        center>
+        <el-upload
+          class="upload-demo"
+          drag
+          action="http://api-toutiao-web.itheima.net/mp/v1_0/user/images"
+          :on-success="handleUploadSuccess"
+          name="image"
+          :headers="{Authorization: `Bearer ${userToken.token}`}"
+          multiple>
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        </el-upload>
+      </el-dialog>
+
       <!-- 图片筛选按钮、添加素材部分 end -->
       <!-- 素材列表部分 start -->
       <div class="images-wrap">
@@ -63,18 +83,33 @@ export default {
         collect: false, // 是否是收藏图片
         page: 1, // 页数
         per_page: 20 // 每页记录数量
-      }
+      },
+      uploadDialogVisible: false // 上传对话框是否显示
     }
   },
   computed: {},
   watch: {},
   created () {
     this.loadUserImages()
+    this.userToken = JSON.parse(window.localStorage.getItem('user_token'))
   },
   mounted () {},
   methods: {
+    // 文件上传成功
+    handleUploadSuccess (res) {
+      this.$message.success('上传成功!')
+      this.uploadDialogVisible = false
+      this.loadUserImages()
+    },
+
+    // 筛选按钮切换事件
+    handleRadioChange (e) {
+      this.imagesParams.collect = e
+      this.loadUserImages()
+    },
+
     // 加载用户图片素材
-    loadUserImages (value) {
+    loadUserImages () {
       getUserImages(this.imagesParams)
         .then(({ data: res }) => {
           this.imagesList = res.data.results
@@ -108,5 +143,9 @@ export default {
 .filter-wrap {
   display: flex;
   justify-content: space-between;
+}
+
+.upload-demo {
+  text-align: center;
 }
 </style>
