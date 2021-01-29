@@ -105,6 +105,7 @@ export default {
     // 筛选按钮切换事件
     handleRadioChange (e) {
       this.imagesParams.collect = e
+      this.imagesParams.page = 1
       this.loadUserImages()
     },
 
