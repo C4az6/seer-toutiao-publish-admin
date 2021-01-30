@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-container">评论组件</div>
+  <div class="comment-container">评论组件123</div>
 </template>
 
 <script>
