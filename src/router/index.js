@@ -6,6 +6,7 @@ import Home from '@/views/home'
 import Article from '@/views/article'
 import Publish from '@/views/publish'
 import Material from '@/views/material'
+import Comment from '@/views/comment'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -33,6 +34,10 @@ const routes = [{
     path: '/material',
     name: 'material',
     component: Material
+  }, {
+    path: '/comment',
+    name: 'comment',
+    component: Comment
   }
   ]
 }
